@@ -45,10 +45,12 @@ public class Daemon {
                         serverOutput.flush();
 
                         String menuSelection = clientInput.readLine();
-                        String suggestedDate, suggestedName, suggestedReason;
+                        String suggestedDate, suggestedName, suggestedReason, searchPhrase;
                         String formatter = "yyyy-MM-dd HH:mm";
                         boolean validDate = false;
+                        boolean searchResultsFound = false;
                         LocalDateTime parsedDate = null;
+
 
 //                        if (menuSelection == null) continue;
 
@@ -101,8 +103,33 @@ public class Daemon {
 
                                 break;
                             case "3":
-                                serverOutput.println("You want to search appointments by id");
-                                serverOutput.print("> ");
+                                serverOutput.println("");
+                                serverOutput.println("                === Search Appointments by Name ===");
+                                serverOutput.println("");
+                                do {
+                                    serverOutput.println("Enter a Visitor name to search by: ");
+                                    serverOutput.print("> ");
+                                    searchPhrase = clientInput.readLine();
+                                }while(searchPhrase.isEmpty());
+                                serverOutput.println("");
+                                serverOutput.println("Search Results:");
+                                serverOutput.println("");
+                                for(int i = 0; i < appointmentsArrayCounter; i++){
+                                    if(appointmentsArray[i].getVisitorName().toLowerCase().contains(searchPhrase.toLowerCase().trim())){
+                                        serverOutput.println("Aptmt ID: \t" + appointmentsArray[i].getId());
+                                        serverOutput.println("Visitor: \t" + appointmentsArray[i].getVisitorName());
+                                        serverOutput.println("Date: \t\t" +appointmentsArray[i].getArrivalTime().getDayOfWeek() + " "
+                                                + appointmentsArray[i].getArrivalTime().format(DateTimeFormatter.ofPattern(formatter)));
+                                        serverOutput.println("Reason: \t" + appointmentsArray[i].getReason());
+                                        serverOutput.println("");
+                                        searchResultsFound = true;
+                                    } else {
+                                        continue;
+                                    }
+                                    if (!searchResultsFound){
+                                        serverOutput.println("No results found!");
+                                    }
+                                }
                                 break;
                             case "4":
                                 serverOutput.println("You want to delete an appointment by id");
