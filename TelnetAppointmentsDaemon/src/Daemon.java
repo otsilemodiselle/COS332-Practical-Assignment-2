@@ -1,9 +1,8 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -165,8 +164,11 @@ public class Daemon {
                                 }
                                 break;
                             case "5":
-                                serverOutput.println("You want to save changes");
-                                serverOutput.print("> ");
+                                serverOutput.println("");
+                                serverOutput.println("                === Save State ===");
+                                serverOutput.println("");
+                                saveToPath("appointmentsDatabase.txt", serverOutput);
+                                serverOutput.println("");
                                 break;
                             case "6":
                                 serverOutput.println("You want to end session");
@@ -246,5 +248,40 @@ public class Daemon {
 
         appointmentsArray[appointmentsArrayCounter-1] = null; // set last index to null
         appointmentsArrayCounter--;
+    }
+
+    private static void saveToPath(String fileName, PrintWriter serverOut){
+
+        String saveString = "";
+        Path path = Path.of(fileName);
+        boolean fileExists = Files.exists(path);
+
+        if(fileExists) {
+            System.out.println("Deleting File: " + fileName);
+            try {
+                Files.delete(path);
+                fileExists = false;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(!fileExists){
+            try {
+                Files.createFile(path);
+                for(int i = 0; i < appointmentsArrayCounter; i++){
+                    saveString += appointmentsArray[i].getId()+"|"+
+                            appointmentsArray[i].getArrivalTime()+"|"+
+                            appointmentsArray[i].getVisitorName()+"|"+
+                            appointmentsArray[i].getReason()+"\n";
+                }
+                if(Files.isWritable(path)){
+                    Files.writeString(path,saveString);
+                    serverOut.println("Successfully saved database!");
+                }
+            } catch (IOException e){
+                serverOut.println("Something went wrong");
+            }
+        }
     }
 }

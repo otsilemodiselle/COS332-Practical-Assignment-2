@@ -6,14 +6,12 @@ public class Appointments {
     private LocalDateTime arrivalTime;
     private String visitorName;
     private String reason;
-    private boolean isConfirmed;
 
     public Appointments(int id, LocalDateTime arrivalTime, String visitorName, String reason) {
         this.id = id;
         this.arrivalTime = arrivalTime;
         this.visitorName = visitorName;
         this.reason = reason;
-        this.isConfirmed = false;
     }
 
     public int getId() {
@@ -32,10 +30,6 @@ public class Appointments {
         return reason;
     }
 
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -52,18 +46,13 @@ public class Appointments {
         this.reason = reason;
     }
 
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
-
     @Override
     public String toString() {
         return "Appointments{" +
                 "id='" + id + '\'' +
                 ", arrivalTime=" + arrivalTime +
                 ", visitorName='" + visitorName + '\'' +
-                ", reason='" + reason + '\'' +
-                ", isConfirmed=" + isConfirmed +
+                ", reason='" + reason +
                 '}';
     }
 }
