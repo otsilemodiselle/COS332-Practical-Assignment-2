@@ -86,8 +86,19 @@ public class Daemon {
                                 serverOutput.println("New appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!");
                                 break;
                             case "2":
-                                serverOutput.println("You want view all appointments");
-                                serverOutput.print("> ");
+
+                                serverOutput.println("");
+                                serverOutput.println("                === Listing All Appointments ===");
+                                serverOutput.println("");
+                                for(int i = 0; i < appointmentsArrayCounter; i++){
+                                    serverOutput.println("Aptmt ID: \t" + appointmentsArray[i].getId());
+                                    serverOutput.println("Visitor: \t" + appointmentsArray[i].getVisitorName());
+                                    serverOutput.println("Date: \t\t" +appointmentsArray[i].getArrivalTime().getDayOfWeek() + " "
+                                            + appointmentsArray[i].getArrivalTime().format(DateTimeFormatter.ofPattern(formatter)));
+                                    serverOutput.println("Reason: \t" + appointmentsArray[i].getReason());
+                                    serverOutput.println("");
+                                }
+
                                 break;
                             case "3":
                                 serverOutput.println("You want to search appointments by id");
