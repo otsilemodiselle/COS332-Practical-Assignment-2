@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class Daemon {
     private static Appointments[] appointmentsArray = new Appointments[100];
     private static int appointmentsArrayCounter = 0;
+    private static int idCounter = 700;
 
     public static void main(String[] args) throws Exception {
 
@@ -50,6 +51,7 @@ public class Daemon {
                         boolean validDate = false;
                         boolean searchResultsFound = false;
                         LocalDateTime parsedDate = null;
+                        int suggestedIdNumberToDelete = 0;
 
 
 //                        if (menuSelection == null) continue;
@@ -83,8 +85,9 @@ public class Daemon {
                                     serverOutput.print("> ");
                                     suggestedReason = clientInput.readLine();
                                 } while(suggestedName.isEmpty());
-                                Appointments newAppointment = new Appointments("100", parsedDate,suggestedName,suggestedReason);
+                                Appointments newAppointment = new Appointments(idCounter, parsedDate,suggestedName,suggestedReason);
                                 addAppointmentToArray(newAppointment);
+                                idCounter++;
                                 serverOutput.println("New appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!");
                                 break;
                             case "2":
@@ -132,8 +135,34 @@ public class Daemon {
                                 }
                                 break;
                             case "4":
-                                serverOutput.println("You want to delete an appointment by id");
+                                serverOutput.println("");
+                                serverOutput.println("                === Delete Appointment by ID ===");
+                                serverOutput.println("");
+                                serverOutput.println("Enter Appointment ID of for cancellation:");
+                                serverOutput.println("");
                                 serverOutput.print("> ");
+                                boolean idFlag = false;
+                                do {
+                                    try {
+                                        suggestedIdNumberToDelete = Integer.parseInt(clientInput.readLine());
+                                        idFlag = true;
+                                    } catch (Exception e) {
+                                            serverOutput.println("");
+                                            serverOutput.println("Please enter a number as the appointment id to be delete!");
+                                            serverOutput.println("");
+                                    }
+                                } while(!idFlag);
+                                idFlag =false;
+                                if(searchArrayByID(suggestedIdNumberToDelete)){
+                                    deleteByIndex(suggestedIdNumberToDelete);
+                                    serverOutput.println("");
+                                    serverOutput.println("Appointment successfully cancelled!");
+                                    serverOutput.println("");
+                                } else {
+                                    serverOutput.println("");
+                                    serverOutput.println("Appointment id could not be found.");
+                                    serverOutput.println("");
+                                }
                                 break;
                             case "5":
                                 serverOutput.println("You want to save changes");
@@ -194,31 +223,28 @@ public class Daemon {
         System.out.println("Could not be found");
     }
 
-    public static String searchArrayByID(String searchString){
+    public static boolean searchArrayByID(int searchInt){
 
-        int foundIndex;
         for(int i = 0; i < appointmentsArrayCounter; i++){
-            if(appointmentsArray[i].getId().equals(searchString)){
-                foundIndex = i;
-                return appointmentsArray[foundIndex].toString();
+            if(appointmentsArray[i].getId()==searchInt){
+                return true;
             }
         }
-        return "Could not be found";
+        return false;
     }
 
-    public static void deleteByIndex(int indexToDelete){
-        if(indexToDelete < 0 || indexToDelete > appointmentsArrayCounter){
-            System.out.println("Invalid record index to delete");
-            return;
+    public static void deleteByIndex(int searchInt){
+        int indexToDelete = 0;
+        for(int i = 0; i < appointmentsArrayCounter; i++) {
+            if (appointmentsArray[i].getId() == searchInt) {
+                indexToDelete = i;
+            }
         }
-
         for (int i = indexToDelete; i < appointmentsArrayCounter-1; i++){
             appointmentsArray[i] = appointmentsArray[i+1]; // shift array values to the left and over the deleted index
         }
 
         appointmentsArray[appointmentsArrayCounter-1] = null; // set last index to null
         appointmentsArrayCounter--;
-
-        System.out.println("Appointment record deleted");
     }
 }

@@ -2,13 +2,13 @@ import java.time.LocalDateTime;
 
 public class Appointments {
 
-    private String id;
+    private int id;
     private LocalDateTime arrivalTime;
     private String visitorName;
     private String reason;
     private boolean isConfirmed;
 
-    public Appointments(String id, LocalDateTime arrivalTime, String visitorName, String reason) {
+    public Appointments(int id, LocalDateTime arrivalTime, String visitorName, String reason) {
         this.id = id;
         this.arrivalTime = arrivalTime;
         this.visitorName = visitorName;
@@ -16,7 +16,7 @@ public class Appointments {
         this.isConfirmed = false;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -36,7 +36,7 @@ public class Appointments {
         return isConfirmed;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
