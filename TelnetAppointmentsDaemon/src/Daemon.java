@@ -4,7 +4,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Daemon {
     private static Appointments[] appointmentsArray = new Appointments[100];
@@ -25,6 +27,7 @@ public class Daemon {
                     PrintWriter serverOutput = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
                     while(true){
+                        serverOutput.println("");
                         serverOutput.println("              === Server Daemon Appointments Menu ===");
                         serverOutput.println("");
                         serverOutput.println("");
@@ -42,12 +45,45 @@ public class Daemon {
                         serverOutput.flush();
 
                         String menuSelection = clientInput.readLine();
+                        String suggestedDate, suggestedName, suggestedReason;
+                        String formatter = "yyyy-MM-dd HH:mm";
+                        boolean validDate = false;
+                        LocalDateTime parsedDate = null;
+
 //                        if (menuSelection == null) continue;
 
                         switch (menuSelection.trim()) {
                             case "1":
-                                serverOutput.println("You want to add an appointment");
-                                serverOutput.print("> ");
+                                serverOutput.println("");
+                                validDate = false;
+                                do {
+                                    serverOutput.println("Enter Appointment Date (YYYY-MM-DD HH:MM)");
+                                    serverOutput.println("");
+                                    serverOutput.print("> ");
+                                    suggestedDate = clientInput.readLine();
+
+                                    try{
+                                        parsedDate = LocalDateTime.parse(suggestedDate, DateTimeFormatter.ofPattern(formatter));
+                                        validDate = true;
+                                    } catch (DateTimeException e){
+                                        serverOutput.println("Incorrect input. Try again");
+                                    }
+                                }while(!validDate);
+                                do {
+                                    serverOutput.println("Enter Visitor name");
+                                    serverOutput.println("");
+                                    serverOutput.print("> ");
+                                    suggestedName = clientInput.readLine();
+                                } while(suggestedName.isEmpty());
+                                do {
+                                    serverOutput.println("Enter appointment reason");
+                                    serverOutput.println("");
+                                    serverOutput.print("> ");
+                                    suggestedReason = clientInput.readLine();
+                                } while(suggestedName.isEmpty());
+                                Appointments newAppointment = new Appointments("100", parsedDate,suggestedName,suggestedReason);
+                                addAppointmentToArray(newAppointment);
+                                serverOutput.println("New appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!");
                                 break;
                             case "2":
                                 serverOutput.println("You want view all appointments");
@@ -97,7 +133,7 @@ public class Daemon {
 //        searchArrayByName("thato");
     }
 
-    public static void addAppointment(Appointments newAppointment){
+    public static void addAppointmentToArray(Appointments newAppointment){
 
         if (appointmentsArrayCounter < 100){
             appointmentsArray[appointmentsArrayCounter] = newAppointment;
