@@ -26,8 +26,9 @@ public class Daemon {
                     BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     PrintWriter serverOutput = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                     loadFromPath("appointmentsDatabase.txt", serverOutput);
+                    boolean sessionActive = true;
 
-                    while(true){
+                    while(sessionActive){
                         serverOutput.println("");
                         serverOutput.println("              === Server Daemon Appointments Menu ===");
                         serverOutput.println("");
@@ -171,8 +172,10 @@ public class Daemon {
                                 serverOutput.println("");
                                 break;
                             case "6":
-                                serverOutput.println("You want to end session");
-                                serverOutput.print("> ");
+                                serverOutput.println("");
+                                serverOutput.println("Goodbye!");
+                                serverOutput.println("");
+                                sessionActive = false;
                                 break;
                             default:
                                 serverOutput.println("Response not understood");
