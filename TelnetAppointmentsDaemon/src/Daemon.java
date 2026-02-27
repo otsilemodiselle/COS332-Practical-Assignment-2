@@ -29,19 +29,17 @@ public class Daemon {
                     boolean sessionActive = true;
 
                     while(sessionActive){
-                        serverOutput.println("");
-                        serverOutput.println("              === Server Daemon Appointments Menu ===");
-                        serverOutput.println("");
+                        printHeader("Server Daemon Appointments Menu", serverOutput);
                         serverOutput.println("");
                         serverOutput.println("");
-                        serverOutput.println("              Please input the appropriate menu option number to continue");
+                        serverOutput.println("\t\t\t\tPlease input the appropriate menu option number to continue");
                         serverOutput.println("");
-                        serverOutput.println("              1. Add Appointment");
-                        serverOutput.println("              2. View All Appointments");
-                        serverOutput.println("              3. Search Appointments by name");
-                        serverOutput.println("              4. Delete Appointment by ID");
-                        serverOutput.println("              5. Save Changes");
-                        serverOutput.println("              6. End Session");
+                        serverOutput.println("\t\t\t\t1. Add Appointment");
+                        serverOutput.println("\t\t\t\t2. View All Appointments");
+                        serverOutput.println("\t\t\t\t3. Search Appointments by name");
+                        serverOutput.println("\t\t\t\t4. Delete Appointment by ID");
+                        serverOutput.println("\t\t\t\t5. Save Changes");
+                        serverOutput.println("\t\t\t\t6. End Session");
                         serverOutput.println("");
                         serverOutput.print("> ");
                         serverOutput.flush();
@@ -59,6 +57,7 @@ public class Daemon {
 
                         switch (menuSelection.trim()) {
                             case "1":
+                                clearScreen(serverOutput);
                                 serverOutput.println("");
                                 validDate = false;
                                 do {
@@ -71,7 +70,7 @@ public class Daemon {
                                         parsedDate = LocalDateTime.parse(suggestedDate, DateTimeFormatter.ofPattern(formatter));
                                         validDate = true;
                                     } catch (DateTimeException e){
-                                        serverOutput.println("Incorrect input. Try again");
+                                        serverOutput.println("\u001B[31mIncorrect input. Try again\u001B[0m");
                                     }
                                 }while(!validDate);
                                 do {
@@ -87,14 +86,13 @@ public class Daemon {
                                     suggestedReason = clientInput.readLine();
                                 } while(suggestedName.isEmpty());
                                 Appointments newAppointment = new Appointments(++idCounter, parsedDate,suggestedName,suggestedReason);
-                                addAppointmentToArray(newAppointment);
-                                serverOutput.println("New appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!");
+                                addAppointmentToArray(newAppointment, serverOutput);
+                                serverOutput.println("\u001B[32mNew appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!\u001B[0m");
                                 break;
                             case "2":
 
-                                serverOutput.println("");
-                                serverOutput.println("                === Listing All Appointments ===");
-                                serverOutput.println("");
+                                clearScreen(serverOutput);
+                                printHeader("Listing All Appointments", serverOutput);
                                 for(int i = 0; i < appointmentsArrayCounter; i++){
                                     serverOutput.println("Aptmt ID: \t" + appointmentsArray[i].getId());
                                     serverOutput.println("Visitor: \t" + appointmentsArray[i].getVisitorName());
@@ -106,9 +104,8 @@ public class Daemon {
 
                                 break;
                             case "3":
-                                serverOutput.println("");
-                                serverOutput.println("                === Search Appointments by Name ===");
-                                serverOutput.println("");
+                                clearScreen(serverOutput);
+                                printHeader("Search Appointments by Name", serverOutput);
                                 do {
                                     serverOutput.println("Enter a Visitor name to search by: ");
                                     serverOutput.print("> ");
@@ -130,14 +127,13 @@ public class Daemon {
                                         continue;
                                     }
                                     if (!searchResultsFound){
-                                        serverOutput.println("No results found!");
+                                        serverOutput.println("\u001B[31mNo results found!\u001B[0m");
                                     }
                                 }
                                 break;
                             case "4":
-                                serverOutput.println("");
-                                serverOutput.println("                === Delete Appointment by ID ===");
-                                serverOutput.println("");
+                                clearScreen(serverOutput);
+                                printHeader("Delete Appointment by ID", serverOutput);
                                 serverOutput.println("Enter Appointment ID of for cancellation:");
                                 serverOutput.println("");
                                 serverOutput.print("> ");
@@ -148,7 +144,7 @@ public class Daemon {
                                         idFlag = true;
                                     } catch (Exception e) {
                                             serverOutput.println("");
-                                            serverOutput.println("Please enter a number as the appointment id to be delete!");
+                                            serverOutput.println("\u001B[31mPlease enter a number as the appointment id to be delete!\u001B[0m");
                                             serverOutput.println("");
                                     }
                                 } while(!idFlag);
@@ -156,29 +152,29 @@ public class Daemon {
                                 if(searchArrayByID(suggestedIdNumberToDelete)){
                                     deleteByIndex(suggestedIdNumberToDelete);
                                     serverOutput.println("");
-                                    serverOutput.println("Appointment successfully cancelled!");
+                                    serverOutput.println("\u001B[32mAppointment successfully cancelled!\u001B[0m");
                                     serverOutput.println("");
                                 } else {
                                     serverOutput.println("");
-                                    serverOutput.println("Appointment id could not be found.");
+                                    serverOutput.println("\u001B[31mAppointment id could not be found.\u001B[0m");
                                     serverOutput.println("");
                                 }
                                 break;
                             case "5":
-                                serverOutput.println("");
-                                serverOutput.println("                === Save State ===");
-                                serverOutput.println("");
+                                clearScreen(serverOutput);
+                                printHeader("Save State", serverOutput);
                                 saveToPath("appointmentsDatabase.txt", serverOutput);
                                 serverOutput.println("");
                                 break;
                             case "6":
+                                clearScreen(serverOutput);
                                 serverOutput.println("");
-                                serverOutput.println("Goodbye!");
+                                serverOutput.println("\u001B[32mGoodbye!\u001B[0m");
                                 serverOutput.println("");
                                 sessionActive = false;
                                 break;
                             default:
-                                serverOutput.println("Response not understood");
+                                serverOutput.println("\u001B[31mResponse not understood\u001B[0m");
                                 serverOutput.print("> ");
                                 break;
 
@@ -205,27 +201,39 @@ public class Daemon {
 //        searchArrayByName("thato");
     }
 
-    public static void addAppointmentToArray(Appointments newAppointment){
+    private static void clearScreen(PrintWriter serverOutput){
+        serverOutput.print("\u001B[2J\u001B[H");
+        serverOutput.flush();
+    }
+
+    private static void printHeader(String text, PrintWriter serverOutput){
+        serverOutput.println("");
+        serverOutput.println("\u001B[33m\t\t\t\t=== " + text + " ===\u001B[0m");
+        serverOutput.println("");
+    }
+
+
+    public static void addAppointmentToArray(Appointments newAppointment, PrintWriter serverOutput){
 
         if (appointmentsArrayCounter < 100){
             appointmentsArray[appointmentsArrayCounter] = newAppointment;
             appointmentsArrayCounter++;
-            System.out.println("Successfully added new appointment for " +
-                    newAppointment.getVisitorName());
+            System.out.println("\u001B[32mSuccessfully added new appointment for " +
+                    newAppointment.getVisitorName() + "\u001B[0m");
         } else {
-            System.out.println("Error! Appointments list full.");
+            serverOutput.println("\u001B[31mError! Appointments list full.\u001B[0m");
         }
     }
 
-    public static void searchArrayByName(String searchString){
+    public static void searchArrayByName(String searchString, PrintWriter serverOutput){
 
         for(int i = 0; i < appointmentsArrayCounter; i++){
             if(appointmentsArray[i].getVisitorName().toLowerCase().contains(searchString.toLowerCase())){
-                System.out.println(appointmentsArray[i].toString());
+                serverOutput.println(appointmentsArray[i].toString());
                 return;
             }
         }
-        System.out.println("Could not be found");
+        serverOutput.println("\u001B[31mCould not be found\u001B[0m");
     }
 
     public static boolean searchArrayByID(int searchInt){
@@ -254,7 +262,7 @@ public class Daemon {
     }
 
     private static void loadFromPath(String fileName, PrintWriter serverOut){
-
+        appointmentsArrayCounter = 0;
         Path path = Path.of(fileName);
 
         try {
@@ -283,7 +291,7 @@ public class Daemon {
         boolean fileExists = Files.exists(path);
 
         if(fileExists) {
-            System.out.println("Deleting File: " + fileName);
+//            System.out.println("Deleting File: " + fileName);
             try {
                 Files.delete(path);
                 fileExists = false;
@@ -303,10 +311,10 @@ public class Daemon {
                 }
                 if(Files.isWritable(path)){
                     Files.writeString(path,saveString);
-                    serverOut.println("Successfully saved database!");
+                    serverOut.println("\u001B[32mSuccessfully saved database!\u001B[0m");
                 }
             } catch (IOException e){
-                serverOut.println("Something went wrong");
+                serverOut.println("\u001B[31mSomething went wrong\u001B[0m");
             }
         }
     }

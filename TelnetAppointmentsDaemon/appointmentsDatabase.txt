@@ -1,7 +1,9 @@
-700|2026-03-02T11:30|Steven Snyman|Fillings
 701|2026-03-05T13:30|Wikus Nel|Cleaning
 702|2026-03-04T15:30|Tlamelo Manaka|Braces consultation
 704|2026-03-09T09:30|Daniel Rakogo|Tooth extraction
-705|2026-03-04T10:00|Vicky Vorster|Fillings
 706|2026-03-07T15:00|Pravesh Naidoo|Crown fitting
 707|2026-03-11T16:00|Victoria Mashaba|Braces removal
+708|2026-03-21T12:30|Tiiseto Sepeti|Teeth cleaning
+709|2026-03-05T14:30|Jimmy Peeples|Teeth whitening
+710|2026-03-08T10:20|Johannes Brink|Crown fitting
+711|2026-03-14T11:00|Sizwe Benisi|Root canal
