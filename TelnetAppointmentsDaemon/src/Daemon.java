@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class Daemon {
     private static Appointments[] appointmentsArray = new Appointments[100];
     private static int appointmentsArrayCounter = 0;
-    private static int idCounter = 700;
+    private static int idCounter = 0;
 
     public static void main(String[] args) throws Exception {
 
@@ -25,6 +25,7 @@ public class Daemon {
 
                     BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     PrintWriter serverOutput = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+                    loadFromPath("appointmentsDatabase.txt", serverOutput);
 
                     while(true){
                         serverOutput.println("");
@@ -84,9 +85,8 @@ public class Daemon {
                                     serverOutput.print("> ");
                                     suggestedReason = clientInput.readLine();
                                 } while(suggestedName.isEmpty());
-                                Appointments newAppointment = new Appointments(idCounter, parsedDate,suggestedName,suggestedReason);
+                                Appointments newAppointment = new Appointments(++idCounter, parsedDate,suggestedName,suggestedReason);
                                 addAppointmentToArray(newAppointment);
-                                idCounter++;
                                 serverOutput.println("New appointment for " + suggestedName + " on " + parsedDate + " successfully captured to database!");
                                 break;
                             case "2":
@@ -248,6 +248,29 @@ public class Daemon {
 
         appointmentsArray[appointmentsArrayCounter-1] = null; // set last index to null
         appointmentsArrayCounter--;
+    }
+
+    private static void loadFromPath(String fileName, PrintWriter serverOut){
+
+        Path path = Path.of(fileName);
+
+        try {
+            BufferedReader reader = Files.newBufferedReader(path);
+            String line;
+            while ((line = reader.readLine()) != null){
+                String[] parts = line.split("\\|");
+                int id = Integer.parseInt(parts[0]);
+                LocalDateTime time = LocalDateTime.parse(parts[1]);
+                String name = parts[2];
+                String reason = parts[3];
+                appointmentsArray[appointmentsArrayCounter++] =
+                        new Appointments(id, time, name, reason);
+                idCounter = id;
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void saveToPath(String fileName, PrintWriter serverOut){
