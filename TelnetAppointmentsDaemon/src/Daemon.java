@@ -92,7 +92,8 @@ public class Daemon {
                             case "2":
 
                                 clearScreen(serverOutput);
-                                printHeader("Listing All Appointments", serverOutput);
+                                printHeader("Listing All Upcoming Appoints in Order", serverOutput);
+                                sortArrayByDate();
                                 for(int i = 0; i < appointmentsArrayCounter; i++){
                                     serverOutput.println("Aptmt ID: \t" + appointmentsArray[i].getId());
                                     serverOutput.println("Visitor: \t" + appointmentsArray[i].getVisitorName());
@@ -234,6 +235,18 @@ public class Daemon {
             }
         }
         serverOutput.println("\u001B[31mCould not be found\u001B[0m");
+    }
+
+    public static void sortArrayByDate(){
+        for(int j = 0; j < appointmentsArrayCounter-1; j++) {
+            for (int i = 0; i < appointmentsArrayCounter - 1; i++) {
+                if (appointmentsArray[i].getArrivalTime().isAfter(appointmentsArray[i + 1].getArrivalTime())) {
+                    Appointments tempAppointment = appointmentsArray[i];
+                    appointmentsArray[i] = appointmentsArray[i + 1];
+                    appointmentsArray[i + 1] = tempAppointment;
+                }
+            }
+        }
     }
 
     public static boolean searchArrayByID(int searchInt){

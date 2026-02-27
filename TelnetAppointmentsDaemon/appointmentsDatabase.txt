@@ -1,9 +1,9 @@
-701|2026-03-05T13:30|Wikus Nel|Cleaning
 702|2026-03-04T15:30|Tlamelo Manaka|Braces consultation
-704|2026-03-09T09:30|Daniel Rakogo|Tooth extraction
-706|2026-03-07T15:00|Pravesh Naidoo|Crown fitting
-707|2026-03-11T16:00|Victoria Mashaba|Braces removal
-708|2026-03-21T12:30|Tiiseto Sepeti|Teeth cleaning
+701|2026-03-05T13:30|Wikus Nel|Cleaning
 709|2026-03-05T14:30|Jimmy Peeples|Teeth whitening
+706|2026-03-07T15:00|Pravesh Naidoo|Crown fitting
 710|2026-03-08T10:20|Johannes Brink|Crown fitting
+704|2026-03-09T09:30|Daniel Rakogo|Tooth extraction
+707|2026-03-11T16:00|Victoria Mashaba|Braces removal
 711|2026-03-14T11:00|Sizwe Benisi|Root canal
+708|2026-03-21T12:30|Tiiseto Sepeti|Teeth cleaning
